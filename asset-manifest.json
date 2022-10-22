@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/CalCourse_FrontEnd/static/css/main.073c9b0a.css",
-    "main.js": "/CalCourse_FrontEnd/static/js/main.32e5fff0.js",
-    "static/js/787.1fa4ae32.chunk.js": "/CalCourse_FrontEnd/static/js/787.1fa4ae32.chunk.js",
+    "main.js": "/CalCourse_FrontEnd/static/js/main.c5845be6.js",
+    "static/js/787.d1d4a2c2.chunk.js": "/CalCourse_FrontEnd/static/js/787.d1d4a2c2.chunk.js",
     "index.html": "/CalCourse_FrontEnd/index.html",
     "main.073c9b0a.css.map": "/CalCourse_FrontEnd/static/css/main.073c9b0a.css.map",
-    "main.32e5fff0.js.map": "/CalCourse_FrontEnd/static/js/main.32e5fff0.js.map",
-    "787.1fa4ae32.chunk.js.map": "/CalCourse_FrontEnd/static/js/787.1fa4ae32.chunk.js.map"
+    "main.c5845be6.js.map": "/CalCourse_FrontEnd/static/js/main.c5845be6.js.map",
+    "787.d1d4a2c2.chunk.js.map": "/CalCourse_FrontEnd/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.32e5fff0.js"
+    "static/js/main.c5845be6.js"
   ]
 }
