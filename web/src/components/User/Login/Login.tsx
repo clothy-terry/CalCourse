@@ -4,11 +4,11 @@ import ReactDOM from "react-dom";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { createRoot } from "react-dom/client";
 import { GoogleLogin } from '@react-oauth/google';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { convertCompilerOptionsFromJson } from "typescript";
 import Tutorial from "./Tutorial";
-
-
+import { postSendVerificationCode } from "../../../requests/post-requests/post-send-verification-code";
+import { count } from "console";
 
 const Login = () => {
   console.log("Login");
@@ -34,30 +34,6 @@ const Login = () => {
     console.log('GoogleAuth Clicked');
     setOnetapHidden(false);
     setEmailAuthHidden(true);
-  }
-
-  const sendEmailCode = () => {
-    console.log('Send Email Code');
-    const emailInput = document.getElementById("email-input")?.getAttribute('value')
-    console.log(emailInput + "@berkeley.edu");
-    sendEmailCodeCountDown();
-  }
-
-  const [emailButton, setEmailButton] = 
-  useState('<a href="#" id="email-code-button" onClick={ sendEmailCode }>获取</a>')
-
-  const countDownInit = 60
-    let countDownCurr = countDownInit;
-
-  function sendEmailCodeCountDown() {
-    
-    const sendEmailCodeButton = document.getElementById("email-code-button");
-    setEmailButton('<span>' + countDownCurr.toString() + '</span>');
-    countDownCurr -= 1;
-    console.log(countDownCurr);
-    setTimeout(() => {
-      sendEmailCodeCountDown()
-    }, 1000);
   }
 
   const [Aboutopen, setAboutOpen] = useState(false);
@@ -89,7 +65,123 @@ const Login = () => {
   const onTutorialClose = () => {
     setTutorialOpen(false);
   };
+
+  const [showSpan, setShowSpan] = useState(false);
+  const [isButtonHidden, setButtonHidden] = useState(false)
+
+  const sendEmailCode = () => {
+    console.log('Send Email Code');
+    setShowSpan(!showSpan)
+    setButtonHidden(!isButtonHidden)
+    const emailInput = document.getElementById("email-input")?.getAttribute('value') + "@berkeley.edu"
+    console.log(emailInput);
+
+    //postSendVerificationCode("lol", [], ()=>console.log("1"), ()=>console.log("2"))
+
+    countDown(countDownCurr);
+  }
+
+  const countDownInit = 10
+  const [countDownCurr, setCountDownCurr] = useState(countDownInit)
+
+  function countDown(time: number) {
+    let intervalId = setInterval(() => {
+      setCountDownCurr(prevCount => prevCount - 1);
+      time = time - 1;
+      if (time === 0) {
+        clearInterval(intervalId)
+        stopCount()
+      }
+  }, 1000)
+  }
+
+  const stopCount = () => {
+    setShowSpan(false)
+    setButtonHidden(false)
+    setCountDownCurr(countDownInit)
+  }
+
+/*
+  function countDown() {
+    const interval = null;
+    
+    const startCount = () => {
+      interval = window.setInterval(() => {
+        setCountDownCurr(prevCount => prevCount - 1);
+      }, 1000);
+    }
+
+    const stopCount = () => {
+      clearInterval(interval);
+    }
+
+    if (countDownCurr === 0) {
+      stopCount();
+    } else {
+      startCount();
+    }
+  }
+  */
+
+
   
+
+  /*
+  let deadline = new Date();
+  deadline.setSeconds(deadline.getSeconds() + countDownInit);
+
+  const countDown = () => {
+    const time = Date.parse(deadline.toString()) - Date.now();
+    setCountDownCurr(Math.floor((time / 1000) % 60));
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => countDown(), 1000);
+    return () => clearInterval(interval);
+  }, []);
+  */
+
+  /*
+  const Ref = useRef(null);
+
+  const clearTimer = () => {
+    let deadline = new Date();
+    deadline.setSeconds(deadline.getSeconds() + countDownInit);
+
+    if (Ref.current) {
+      clearInterval(Ref.current);
+    }
+    const id = setInterval(() => {
+      countDown(deadline);
+    }, 1000)
+    Ref.current = id;
+
+  }
+
+  const countDown = (time: Date) => {
+    let seconds = getTimeRemain(time);
+    if (seconds > 0) {
+      setCountDownCurr(seconds);
+    }
+  }
+
+  const getTimeRemain = (time: Date) => {
+    const total = Date.parse(time.toString()) - Date.parse(Date());
+    const seconds = Math.floor((total / 1000) % 60);
+    return seconds;
+  }
+  */
+
+  /*
+  function sendEmailCodeCountDown() {
+    setCountDownCurr(countDownCurr - 1)
+    console.log(countDownCurr);
+    setTimeout(() => {
+      sendEmailCodeCountDown()
+    }, 1000);
+  }
+  */
+
 
   return (
 
@@ -114,11 +206,8 @@ const Login = () => {
       >
         <Input id="email-input" placeholder="Oskibear"/>@berkeley.edu
         </Form.Item>  
-        <div className="emailButton" dangerouslySetInnerHTML={{__html: emailButton}}>
-
-        </div>
-        
-      
+        {showSpan ? <span>{countDownCurr}</span> :null}
+        <a hidden={isButtonHidden} href="#" id="email-code-button" onClick={sendEmailCode}>获取</a>
       <Form.Item
         name="验证码input"
         rules={[{ required: false, message: '请正确输入验证码！' }]}
@@ -146,6 +235,7 @@ const Login = () => {
   useOneTap
 />
 </GoogleOAuthProvider>
+
     </div>
       
 </div>
