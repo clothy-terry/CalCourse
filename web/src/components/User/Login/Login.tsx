@@ -116,11 +116,7 @@ const Login = () => {
 
   const emailSignInSuccess = () => {
     console.log("sign in ")
-    //window.open("/dashboard"); 
-  }
-
-  const testing = () => {
-    postVerifyCode("123", "123", [], emailSignInSuccess, ()=> console.log("验证失败，请重试"))
+    window.open("/dashboard"); 
   }
 
   const onEmailSignIn = () => {
@@ -169,7 +165,7 @@ const Login = () => {
       >
         <Input id="auth-code-input" placeholder="请输入验证码"/>
       </Form.Item>
-      <Button type="link" onClick={testing}>登录</Button>
+      <Button type="link" onClick={onEmailSignIn}>登录</Button>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
       </Form.Item>
