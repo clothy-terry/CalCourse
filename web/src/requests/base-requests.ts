@@ -50,7 +50,14 @@ export const basePostRequest = (
     // },
     body: data,
   })
-    .then((response) => response.json())
+  .then((response) => {
+    if (response.status < 400) {
+      // status < 400 means the request was successful
+      response.json();
+    } else {
+      return Promise.reject();
+    }
+  }) 
     .then(responseHandler || defaultResponseHandler)
     .catch(errorHandler || defaultErrorHandler);
 };

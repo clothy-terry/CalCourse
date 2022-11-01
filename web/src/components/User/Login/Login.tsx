@@ -7,14 +7,17 @@ import { GoogleLogin } from '@react-oauth/google';
 import React, { useState, useEffect } from 'react';
 import { convertCompilerOptionsFromJson } from "typescript";
 import Tutorial from "./Tutorial";
-
-
+import { postSendVerificationCode } from "../../../requests/post-requests/post-send-verification-code";
+import { postVerifyCode } from "../../../requests/post-requests/post-verify-authentication-code";
 
 const Login = () => {
   console.log("Login");
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    console.log('Success:', values, "hi there!");
+    //sendEmailCode();
+    let email = form.getFieldValue("emailInputField")
+    console.log(email);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -34,30 +37,6 @@ const Login = () => {
     console.log('GoogleAuth Clicked');
     setOnetapHidden(false);
     setEmailAuthHidden(true);
-  }
-
-  const sendEmailCode = () => {
-    console.log('Send Email Code');
-    const emailInput = document.getElementById("email-input")?.getAttribute('value')
-    console.log(emailInput + "@berkeley.edu");
-    sendEmailCodeCountDown();
-  }
-
-  const [emailButton, setEmailButton] = 
-  useState('<a href="#" id="email-code-button" onClick={ sendEmailCode }>获取</a>')
-
-  const countDownInit = 60
-    let countDownCurr = countDownInit;
-
-  function sendEmailCodeCountDown() {
-    
-    const sendEmailCodeButton = document.getElementById("email-code-button");
-    setEmailButton('<span>' + countDownCurr.toString() + '</span>');
-    countDownCurr -= 1;
-    console.log(countDownCurr);
-    setTimeout(() => {
-      sendEmailCodeCountDown()
-    }, 1000);
   }
 
   const [Aboutopen, setAboutOpen] = useState(false);
@@ -89,7 +68,75 @@ const Login = () => {
   const onTutorialClose = () => {
     setTutorialOpen(false);
   };
-  
+
+  const [showSpan, setShowSpan] = useState(false);
+  const [isButtonHidden, setButtonHidden] = useState(false)
+  const [emailInput, setEmailInput] = useState("?");
+
+  const[form] = Form.useForm();
+
+  function storeEmailInput(event:any) {
+    setEmailInput(event.target.value + "@berkeley.edu")
+  }
+
+
+  function sendEmailCode() {
+    //setEmailInput(event.target.value)
+    //let email = form.getFieldValue("emailInputField")
+    //console.log(email);
+    console.log('Send Email Code');
+    setShowSpan(!showSpan)
+    setButtonHidden(!isButtonHidden)
+    //setEmailInput(document.getElementById("email-input")?.getAttribute('value') + "@berkeley.edu")
+    console.log(emailInput);
+    postSendVerificationCode(emailInput, [], ()=>console.log("Successfully sent"), ()=>console.log("Fail"))
+    countDown(countDownCurr);
+  }
+
+
+  const countDownInit = 10
+  const [countDownCurr, setCountDownCurr] = useState(countDownInit)
+
+  function countDown(time: number) {
+    let intervalId = setInterval(() => {
+      setCountDownCurr(prevCount => prevCount - 1);
+      time = time - 1;
+      if (time === 0) {
+        clearInterval(intervalId)
+        stopCount()
+      }
+  }, 1000)
+  }
+
+  const stopCount = () => {
+    setShowSpan(false)
+    setButtonHidden(false)
+    setCountDownCurr(countDownInit)
+  }
+
+  const emailSignInSuccess = () => {
+    console.log("sign in ")
+    //window.open("/dashboard"); 
+  }
+
+  const testing = () => {
+    postVerifyCode("123", "123", [], emailSignInSuccess, ()=> console.log("验证失败，请重试"))
+  }
+
+  const onEmailSignIn = () => {
+    let codeInput = document.getElementById("auth-code-input")?.getAttribute('value')
+    let codeReg = new RegExp("^[0-9]{6}$");
+    console.log(emailInput, codeInput)
+    if (!emailInput) {
+      console.log("请先获取验证码");
+    } else if (!codeInput) {
+      console.log("请填写验证码");
+    } else if (!codeReg.test(codeInput)) {
+      console.log("验证码格式不正确");
+    } else {
+      postVerifyCode("123", "123", [], emailSignInSuccess, ()=> console.log("验证失败，请重试"))
+    }
+  }
 
   return (
 
@@ -103,29 +150,26 @@ const Login = () => {
 
       <div id="email-auth-wrapper" hidden={isEmailAuthHidden}>
       <Form
+      form={form}
       name="basic"
       labelCol={{ span: 1 }}
       wrapperCol={{ span: 6 }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off">
       <Form.Item 
-      name="username"rules={[{ required: true, message: 'Please input your email!' }]}
+      name="emailInputField"
       >
-        <Input id="email-input" placeholder="Oskibear"/>@berkeley.edu
+        <Input id="email-input" placeholder="Oskibear" onChange={event=>storeEmailInput(event)}/>@berkeley.edu
         </Form.Item>  
-        <div className="emailButton" dangerouslySetInnerHTML={{__html: emailButton}}>
-
-        </div>
-        
-      
+        {showSpan ? <span>{countDownCurr}</span> :null}
+        <Button type="link" hidden={isButtonHidden} id="email-code-button" onClick={sendEmailCode}>获取</Button>
       <Form.Item
         name="验证码input"
         rules={[{ required: false, message: '请正确输入验证码！' }]}
       >
-        <Input placeholder="请输入验证码"/>
+        <Input id="auth-code-input" placeholder="请输入验证码"/>
       </Form.Item>
-      <a href="#">登录</a>
+      <Button type="link" onClick={testing}>登录</Button>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
       </Form.Item>
@@ -146,6 +190,7 @@ const Login = () => {
   useOneTap
 />
 </GoogleOAuthProvider>
+
     </div>
       
 </div>
