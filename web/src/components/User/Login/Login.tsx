@@ -116,8 +116,9 @@ const Login = () => {
 
   const emailSignInSuccess = () => {
     console.log("sign in ")
-    window.open("/dashboard"); 
+    //window.open("/dashboard"); 
   }
+
 
   const onEmailSignIn = () => {
     let codeInput = document.getElementById("auth-code-input")?.getAttribute('value')
