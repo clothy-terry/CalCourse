@@ -116,7 +116,7 @@ const Login = () => {
 
   const emailSignInSuccess = () => {
     console.log("sign in ")
-    //window.open("/dashboard"); 
+    window.open("/dashboard"); 
   }
 
 
