@@ -81,20 +81,16 @@ const Login = () => {
 
 
   function sendEmailCode() {
-    //setEmailInput(event.target.value)
-    //let email = form.getFieldValue("emailInputField")
-    //console.log(email);
     console.log('Send Email Code');
     setShowSpan(!showSpan)
     setButtonHidden(!isButtonHidden)
-    //setEmailInput(document.getElementById("email-input")?.getAttribute('value') + "@berkeley.edu")
     console.log(emailInput);
     postSendVerificationCode(emailInput, [], ()=>console.log("Successfully sent"), ()=>console.log("Fail"))
     countDown(countDownCurr);
   }
 
 
-  const countDownInit = 10
+  const countDownInit = 60
   const [countDownCurr, setCountDownCurr] = useState(countDownInit)
 
   function countDown(time: number) {
@@ -131,7 +127,7 @@ const Login = () => {
     } else if (!codeReg.test(codeInput)) {
       console.log("验证码格式不正确");
     } else {
-      postVerifyCode("123", "123", [], emailSignInSuccess, ()=> console.log("验证失败，请重试"))
+      postVerifyCode(emailInput, codeInput, [], emailSignInSuccess, ()=> console.log("验证失败，请重试"))
     }
   }
 
