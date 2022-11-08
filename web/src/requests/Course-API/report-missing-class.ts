@@ -1,15 +1,14 @@
+import { MissingRecord } from '../../utils/interfaces';
 import { basePostRequest } from '../base-requests';
 
-export const postVerifyCode = (
-  email_address: string,
-  auth_code: string,
-  data: any,
+export const reportMissingClass = (
+  missingClass: MissingRecord,
   responseHandler: (data: any) => void,
   errorHandler: (error: any) => void
 ) => {
   basePostRequest(
-    "/email/verify_authentication_code/" + email_address + "/" + auth_code,
-    data,
+    "/courses/report_missing_class",
+    missingClass,
     responseHandler,
     errorHandler
   );
