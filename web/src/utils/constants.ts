@@ -1,5 +1,5 @@
 // Change this to true to enable production mode
-const production = true;
+const production = false;
 
 // Constants for development
 const DEV_APP_BASE_URL: string = 'http://localhost:3000';
