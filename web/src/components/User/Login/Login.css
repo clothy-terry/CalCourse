@@ -20,6 +20,10 @@
     min-height: 100vh;
   }
 
+#login-description {
+    text-align: center;
+}
+
 #login-wrapper {
     display: flex;
     position: absolute;

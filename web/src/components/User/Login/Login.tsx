@@ -2,13 +2,11 @@ import { Button, Divider, Form, Input, Drawer} from "antd";
 import "./Login.css";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 import Tutorial from "./Tutorial";
 import LoginAPI from "../../../requests/LoginAPI";
 import About from "./About";
 import Cookie from "./Cookie";
-import {Radio} from "antd";
-import React from 'react';
 import type { RadioChangeEvent } from 'antd';
 
 const Login = () => {
@@ -22,13 +20,13 @@ const Login = () => {
 
   const[isEmailAuthHidden, setEmailAuthHidden] = useState(true);
   const[isOneTapHidden, setOnetapHidden] = useState(true);
-  const[cardCoordinatePoint, setCardCoordinatePoint] = useState("flex absolute top-[50px] left-[0px] box-border h-[10px] w-[400px] p-4 border-0 ");
+  const[cardCoordinatePoint, setCardCoordinatePoint] = useState("flex absolute top-[50px] left-[0px] box-border h-[10px] w-[400px] p-4 border-3 border-white ");
 
   const handleEmailAuth = () => {
     console.log('EmailAuth Clicked');
     setEmailAuthHidden(false);
     setOnetapHidden(true);
-    setCardCoordinatePoint("flex absolute top-[0px] left-[0px] box-border h-[10px] w-[400px] p-4 border-0 ")
+    setCardCoordinatePoint("flex absolute top-[0px] left-[0px] box-border h-[10px] w-[400px] p-4 border-1 border-white ")
   }
 
   const handleGoogleAuth = () => {
@@ -56,6 +54,16 @@ const Login = () => {
     setTutorial(!tutorialHidden);
   };
 
+  
+
+  function errorAlert(msg: SetStateAction<string>) {
+    let des = document.getElementById("login-description")
+    if (des != undefined) {
+      des.className = "absolute top-[60px] left-[120px] text-yellow-300 text-bold text-xl"
+      des.textContent = "\u26A0" + "\n" + msg
+    }
+  }
+
 
   const [showSpan, setShowSpan] = useState(false);
   const [isButtonHidden, setButtonHidden] = useState(false)
@@ -66,15 +74,28 @@ const Login = () => {
   function storeEmailInput(event:any) {
     setEmailInput(event.target.value + "@berkeley.edu")
   }
+  
+  const [codeInput, setCodeInput] = useState("??");
+
+  function storeCodeInput(event:any) {
+    setCodeInput(event.target.value)
+  }
 
 
   function sendEmailCode() {
-    console.log('Send Email Code');
-    setShowSpan(!showSpan)
-    setButtonHidden(!isButtonHidden)
-    console.log(emailInput);
-    LoginAPI.sendVerificationCode(emailInput, ()=>console.log("Successfully sent"), ()=>console.log("Fail"))
-    countDown(countDownCurr);
+    let emailReg = new RegExp("^[A-Za-z0-9._-]+$");
+    if (emailInput == "?") {
+      errorAlert("请填写Berkeley邮箱地址")
+    } else if (!emailReg.test(emailInput)) {
+      errorAlert("邮箱地址不正确")
+    } else {
+      console.log('Send Email Code');
+      setShowSpan(!showSpan)
+      setButtonHidden(!isButtonHidden)
+      console.log(emailInput);
+      LoginAPI.sendVerificationCode(emailInput, ()=>console.log("Successfully sent"), ()=>console.log("Fail"))
+      countDown(countDownCurr);
+    }
   }
 
 
@@ -105,25 +126,17 @@ const Login = () => {
 
 
   const onEmailSignIn = () => {
-    let codeInput = document.getElementById("auth-code-input")?.getAttribute('value')
+    //let codeInput = document.getElementById("auth-code-input")?.getAttribute('value')
     let codeReg = new RegExp("^[0-9]{6}$");
     console.log(emailInput, codeInput)
     if (!emailInput) {
-      console.log("请先获取验证码");
-    } else if (!codeInput) {
-      console.log("请填写验证码");
+      errorAlert("请先获取验证码");
+    } else if (codeInput == "??") {
+      errorAlert("请先填写验证码");
     } else if (!codeReg.test(codeInput)) {
-      console.log("验证码格式不正确");
+      errorAlert("验证码格式不正确");
     } else {
       LoginAPI.verifyAuthenticationCode(emailInput, codeInput, emailSignInSuccess, ()=> console.log("验证失败，请重试"))
-    }
-  }
-
-  const onSelectLoginOption = ({target:{value}}: RadioChangeEvent) => {
-    if (value == "bConnected-option") {
-      handleGoogleAuth();
-    } else {
-      handleEmailAuth();
     }
   }
 
@@ -132,7 +145,8 @@ const Login = () => {
       <div className="text-white font-bold text-5xl absolute top-[100px] left-1/4" id="title">Cal Course</div>
       <div id="login-wrapper">
         <div className={cardCoordinatePoint}>
-        <div className="absolute top-[50px] left-[105px] text-white font-bold text-2xl">我们需要验证你的学生身份</div>
+        <div id="login-description" className="absolute top-[50px] left-[105px] 
+        text-white text-bold text-2xl text-right">我们需要验证你的学生身份</div>
           <div className="absolute top-[110px] left-[100px]" id="auth-option-wrapper">
             <label id="auth-option"  onClick={handleEmailAuth}>邮箱验证码</label>
             <label id="auth-option"  onClick={handleGoogleAuth}>bConnected</label>
@@ -158,7 +172,7 @@ const Login = () => {
         rules={[{ required: false, message: '请正确输入验证码！' }]}
       >
         <div className="flex box-border h-[35px] w-[318px] p-0 border-0">
-        <input id="email-code-input" placeholder="请输入验证码"/>
+        <input id="email-code-input" placeholder="请输入验证码" onChange={event=>storeCodeInput(event)}/>
         <a id="email-login-button" onClick={onEmailSignIn}>登录</a>
         </div>
       </Form.Item>
@@ -178,7 +192,7 @@ const Login = () => {
     console.log(credentialResponse);
   }}
   onError={() => {
-    console.log('Login Failed');
+    errorAlert('Login Failed');
   }}
   useOneTap
 />
