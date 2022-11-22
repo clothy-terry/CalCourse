@@ -7,10 +7,19 @@ import Tutorial from "./Tutorial";
 import LoginAPI from "../../../requests/LoginAPI";
 import About from "./About";
 import Cookie from "./Cookie";
+import { useNavigate } from 'react-router-dom';
 import type { RadioChangeEvent } from 'antd';
 
 const Login = () => {
   console.log("Login");
+  const navigate = useNavigate();
+  // detect if token is already stored
+  // if yes, then navigate to dashboard page
+
+  if (checkValidToken()) {
+    navigate("/dashboard");
+    console.log("checked");
+  }
 
   const onFinish = (values: any) => {
     console.log('Success:', values, "hi there!");
@@ -54,7 +63,6 @@ const Login = () => {
     setTutorial(!tutorialHidden);
   };
 
-  
 
   function errorAlert(msg: SetStateAction<string>) {
     let des = document.getElementById("login-description")
@@ -67,11 +75,13 @@ const Login = () => {
 
   const [showSpan, setShowSpan] = useState(false);
   const [isButtonHidden, setButtonHidden] = useState(false)
+  const [emailOriginalInput, setEmailOriginalInput] = useState("?");
   const [emailInput, setEmailInput] = useState("?");
 
   const[form] = Form.useForm();
 
   function storeEmailInput(event:any) {
+    setEmailOriginalInput(event.target.value)
     setEmailInput(event.target.value + "@berkeley.edu")
   }
   
@@ -81,12 +91,12 @@ const Login = () => {
     setCodeInput(event.target.value)
   }
 
-
   function sendEmailCode() {
     let emailReg = new RegExp("^[A-Za-z0-9._-]+$");
-    if (emailInput == "?") {
+    if (emailOriginalInput == "?") {
       errorAlert("请填写Berkeley邮箱地址")
-    } else if (!emailReg.test(emailInput)) {
+    } else if (!emailReg.test(emailOriginalInput)) {
+      console.log(emailOriginalInput)
       errorAlert("邮箱地址不正确")
     } else {
       console.log('Send Email Code');
@@ -119,14 +129,8 @@ const Login = () => {
     setCountDownCurr(countDownInit)
   }
 
-  const emailSignInSuccess = () => {
-    console.log("sign in ")
-    window.open("/dashboard"); 
-  }
-
 
   const onEmailSignIn = () => {
-    //let codeInput = document.getElementById("auth-code-input")?.getAttribute('value')
     let codeReg = new RegExp("^[0-9]{6}$");
     console.log(emailInput, codeInput)
     if (!emailInput) {
@@ -136,9 +140,75 @@ const Login = () => {
     } else if (!codeReg.test(codeInput)) {
       errorAlert("验证码格式不正确");
     } else {
-      LoginAPI.verifyAuthenticationCode(emailInput, codeInput, emailSignInSuccess, ()=> console.log("验证失败，请重试"))
+      LoginAPI.verifyAuthenticationCode(
+        emailInput, 
+        codeInput, 
+        emailSignInSuccess, 
+        (response: any)=> console.log("验证失败，请重试"))
     }
   }
+
+  const emailSignInSuccess = (response: any) => {
+    console.log(response);
+    saveDataToLocalStorage(emailInput, response["access_token"]);
+    console.log("sign in ");
+    navigate("/dashboard");
+  };
+
+  const handleCredentialResponse = (response: any) => {
+    console.log("encoded JWT token: " + response.credential);
+  }
+
+  const saveUserTokenTime = () => {
+    let currentTime = new Date();
+    let currentTimeList = [
+      currentTime.getUTCFullYear(),
+      currentTime.getUTCMonth(),
+      currentTime.getUTCDate(),
+      currentTime.getUTCHours(),
+    ];
+    localStorage.setItem("user_token_time", JSON.stringify(currentTimeList));
+  }
+
+  const saveDataToLocalStorage = (email: string, access_token: string) => {
+    localStorage.setItem("user_email", email);
+    localStorage.setItem("user_token", access_token);
+    saveUserTokenTime();
+  };
+
+  function readUserTokenTime() {
+    let token_time_data = localStorage.getItem("user_token_time");
+    if (token_time_data !== null) {
+      return JSON.parse(token_time_data);
+    } else {
+      return null;
+    }
+  };
+
+  function checkValidToken() {
+    let timeList = readUserTokenTime();
+    if (timeList === null) {
+      return false;
+    }
+    let currentTime = new Date();
+    let tokenTime = Date.UTC(
+      timeList[0],
+      timeList[1],
+      timeList[2],
+      timeList[3],
+      0,
+      0,
+      0
+    );
+    let diff_ms = currentTime.getTime() - tokenTime;
+    // token is valid for 6 hours
+    let diff_hours = diff_ms / 1000 / 60 / 60;
+    if (diff_hours <= 1) {
+      return true;
+    }
+    return false;
+  };
+
 
   return (
     <div  id="main-container">
