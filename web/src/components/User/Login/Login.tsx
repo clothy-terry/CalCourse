@@ -2,6 +2,18 @@ import { Button, Divider, Form, Input, Drawer} from "antd";
 import "./Login.css";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
+//import { GoogleLogin } from 'react-google-login';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import {
+  GoogleButton,
+  IAuthorizationOptions,
+  isLoggedIn,
+  createOAuthHeaders,
+  logOutOAuthUser,
+  GoogleAuth,
+} from "react-google-oauth2";
+
 import { useState, useEffect, SetStateAction } from 'react';
 import Tutorial from "./Tutorial";
 import LoginAPI from "../../../requests/LoginAPI";
@@ -140,6 +152,22 @@ const Login = () => {
     }
   }
 
+  const clientId = "250149314571-jen9j3rq3bsds17t8ot35g4efd66gt54.apps.googleusercontent.com";
+  const onSuccess = (res : any) => {
+    console.log("Success")
+  }  
+
+  const onFailure = (res : any) => {
+    console.log("Fail")
+  }
+  /*const options: IAuthorizationOptions = {
+        clientId: "250149314571-jen9j3rq3bsds17t8ot35g4efd66gt54.apps.googleusercontent.com", 
+        redirectUri: "https://localhost:3000",
+        scopes: ["openid", "profile", "email"],
+        includeGrantedScopes: true,
+        accessType: "offline",
+    };
+*/
   return (
     <div  id="main-container">
       <div className="text-white font-bold text-5xl absolute top-[100px] left-1/4" id="title">Cal Course</div>
@@ -185,18 +213,16 @@ const Login = () => {
 
     <div className="absolute top-[180px] left-[135px] box-border h-[20px] w-[400px] p-4 border-0" 
     hidden={isOneTapHidden}>
-    <GoogleOAuthProvider clientId=
-      "250149314571-jen9j3rq3bsds17t8ot35g4efd66gt54.apps.googleusercontent.com">
-        <GoogleLogin 
-  onSuccess={(credentialResponse: any) => {
+    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleLogin
+  onSuccess={credentialResponse => {
     console.log(credentialResponse);
   }}
   onError={() => {
-    errorAlert('Login Failed');
+    console.log('Login Failed');
   }}
-  useOneTap
 />
-</GoogleOAuthProvider>
+      </GoogleOAuthProvider>;
     </div>  
 </div>
 

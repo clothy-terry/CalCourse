@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import image123 from '../../../assets/123.jpg';
 
 class Tutorial extends Component {
     state = {  } 
@@ -20,7 +21,7 @@ class Tutorial extends Component {
 </p>
 <p className="c2">
 <span style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}}>
-<img alt="" src="../../../assets/123.jpg" style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
+<img alt="" src={image123} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
 </span>
 </p>
 <p className="c2 c3">
