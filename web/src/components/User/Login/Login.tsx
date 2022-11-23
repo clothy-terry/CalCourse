@@ -2,6 +2,7 @@ import { Button, Divider, Form, Input, Drawer} from "antd";
 import "./Login.css";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { useState, useEffect, SetStateAction } from 'react';
 import Tutorial from "./Tutorial";
 import LoginAPI from "../../../requests/LoginAPI";
@@ -9,6 +10,19 @@ import About from "./About";
 import Cookie from "./Cookie";
 import { useNavigate } from 'react-router-dom';
 import type { RadioChangeEvent } from 'antd';
+import jwt_decode from "jwt-decode";
+
+import {
+  GoogleButton,
+  IAuthorizationOptions,
+  isLoggedIn,
+  createOAuthHeaders,
+  logOutOAuthUser,
+  GoogleAuth,
+} from "react-google-oauth2";
+import { verifyEmailAddress } from "../../../requests/Login-API/verify-email-address";
+//import {GoogleLogin} from 'react-google-login'
+
 
 const Login = () => {
   console.log("Login");
@@ -93,7 +107,8 @@ const Login = () => {
 
   function sendEmailCode() {
     let emailReg = new RegExp("^[A-Za-z0-9._-]+$");
-    if (emailOriginalInput == "?") {
+    console.log(emailOriginalInput)
+    if (emailOriginalInput) {
       errorAlert("请填写Berkeley邮箱地址")
     } else if (!emailReg.test(emailOriginalInput)) {
       console.log(emailOriginalInput)
@@ -133,7 +148,7 @@ const Login = () => {
   const onEmailSignIn = () => {
     let codeReg = new RegExp("^[0-9]{6}$");
     console.log(emailInput, codeInput)
-    if (!emailInput) {
+    if (emailInput == "?") {
       errorAlert("请先获取验证码");
     } else if (codeInput == "??") {
       errorAlert("请先填写验证码");
@@ -209,6 +224,31 @@ const Login = () => {
     return false;
   };
 
+  const clientId = "250149314571-cfinl9pkdvrv7epjvmid5uqve75ohk48.apps.googleusercontent.com";
+
+  interface MyToken {
+    email: string;
+    family_name: string;
+    given_name: string;
+    email_verified: boolean;
+  }
+  const onSuccess = (res : any) => {
+    console.log(res["credential"])
+    // decode JWT token
+    let token = res["credential"];
+    var decoded = jwt_decode<MyToken>(token);
+    console.log(decoded);
+    let user_email = decoded.email;
+    let user_givenName = decoded.given_name.concat(" ");
+    let user_name = 
+    user_givenName.concat(decoded.family_name);
+    let isVerified = decoded.email_verified.toString();
+    console.log(user_email, user_name, isVerified);  
+    verifyEmailAddress(user_email, isVerified, user_name,
+       ()=> navigate("/dashboard"), ()=> errorAlert("请使用其他邮箱登录"))
+  }
+
+
 
   return (
     <div  id="main-container">
@@ -252,21 +292,14 @@ const Login = () => {
     </Form>
       </div>
       
-
     <div className="absolute top-[180px] left-[135px] box-border h-[20px] w-[400px] p-4 border-0" 
     hidden={isOneTapHidden}>
-    <GoogleOAuthProvider clientId=
-      "250149314571-jen9j3rq3bsds17t8ot35g4efd66gt54.apps.googleusercontent.com">
-        <GoogleLogin 
-  onSuccess={(credentialResponse: any) => {
-    console.log(credentialResponse);
-  }}
-  onError={() => {
-    errorAlert('Login Failed');
-  }}
-  useOneTap
-/>
-</GoogleOAuthProvider>
+    <GoogleOAuthProvider clientId={clientId}>
+      <GoogleLogin onSuccess={onSuccess} 
+      onError = {() => {console.log("Fail")}}
+      useOneTap/>
+      </GoogleOAuthProvider>
+
     </div>  
 </div>
 
