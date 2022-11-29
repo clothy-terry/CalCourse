@@ -43,20 +43,20 @@ const Login = () => {
 
   const[isEmailAuthHidden, setEmailAuthHidden] = useState(true);
   const[isOneTapHidden, setOnetapHidden] = useState(true);
-  const[cardCoordinatePoint, setCardCoordinatePoint] = useState("flex absolute top-[50px] left-[0px] box-border h-[10px] w-[400px] p-4 border-3 border-white ");
+  
 
   const handleEmailAuth = () => {
     console.log('EmailAuth Clicked');
     setEmailAuthHidden(false);
     setOnetapHidden(true);
-    setCardCoordinatePoint("flex absolute top-[0px] left-[0px] box-border h-[10px] w-[400px] p-4 border-1 border-white ")
+    
   }
 
   const handleGoogleAuth = () => {
     console.log('GoogleAuth Clicked');
     setOnetapHidden(false);
     setEmailAuthHidden(true);
-    setCardCoordinatePoint("flex absolute top-[10px] left-[0px] box-border h-[10px] w-[400px] p-4 border-0 ")
+    
   }
 
   const [cookieHidden, setCookie] = useState(true);
@@ -81,7 +81,7 @@ const Login = () => {
   function errorAlert(msg: SetStateAction<string>) {
     let des = document.getElementById("login-description")
     if (des != undefined) {
-      des.className = "absolute top-[60px] left-[120px] text-yellow-300 text-bold text-xl"
+      des.className = "text-yellow-300 text-bold text-[18px]"
       des.textContent = "\u26A0" + "\n" + msg
     }
   }
@@ -234,7 +234,7 @@ const Login = () => {
   }
   const onSuccess = (res : any) => {
     console.log(res["credential"])
-    // decode JWT token
+    // decode JWT token and send verify request
     let token = res["credential"];
     var decoded = jwt_decode<MyToken>(token);
     console.log(decoded);
@@ -252,54 +252,42 @@ const Login = () => {
 
   return (
     <div  id="main-container">
-      <div className="text-white font-bold text-5xl absolute top-[100px] left-1/4" id="title">Cal Course</div>
-      <div id="login-wrapper">
-        <div className={cardCoordinatePoint}>
-        <div id="login-description" className="absolute top-[50px] left-[105px] 
-        text-white text-bold text-2xl text-right">我们需要验证你的学生身份</div>
-          <div className="absolute top-[110px] left-[100px]" id="auth-option-wrapper">
+      <div className="text-white font-bold text-5xl absolute top-[10vh] left-[20vh]" id="title">
+        <a style={{color: "white"}} onClick = {()=> navigate("/")}>Cal course</a>
+        </div>
+      <div id="login-wrapper" className="grid grid-cols-1 gap-4 content-center">
+        
+        <div id="login-description" className="text-white text-[18px]">我们需要验证你的学生身份</div>
+        <div id="auth-option-wrapper">
             <label id="auth-option"  onClick={handleEmailAuth}>邮箱验证码</label>
             <label id="auth-option"  onClick={handleGoogleAuth}>bConnected</label>
         </div>
-          </div>
-          
-      <div className="relative top-[100px] left-[90px]" 
-      id="email-auth-wrapper" hidden={isEmailAuthHidden}>
-      <Form form={form} name="basic" labelCol={{ span: 1 }} wrapperCol={{ span: 6 }} 
-      onFinish={onFinish} autoComplete="off">
-      <Form.Item name="emailInputField">
-        <div className="flex box-border h-[35px] w-[318px] p-0 border-0">
+      
+        
+      
+      <div id="emailInputField"  hidden={isEmailAuthHidden}>
         <input id="email-input" placeholder="oskibear" 
         onChange={event=>storeEmailInput(event)}/>
-        <span className="text-lg" id="email-suffix">@berkeley.edu</span>
+        <span  id="email-suffix">@berkeley.edu</span>
         {showSpan ? <span id="countdown">{countDownCurr}</span> :null}
         <a hidden={isButtonHidden} id="email-code-button" 
         onClick={sendEmailCode}>获取</a>
-        </div>
-        </Form.Item>  
-      <Form.Item
-        name="验证码input"
-        rules={[{ required: false, message: '请正确输入验证码！' }]}
-      >
-        <div className="flex box-border h-[35px] w-[318px] p-0 border-0">
+        </div>  
+      
+        <div id="email-code-line" className="" hidden={isEmailAuthHidden}>
         <input id="email-code-input" placeholder="请输入验证码" onChange={event=>storeCodeInput(event)}/>
         <a id="email-login-button" onClick={onEmailSignIn}>登录</a>
         </div>
-      </Form.Item>
-
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-      </Form.Item>
-    </Form>
-      </div>
       
-    <div className="absolute top-[180px] left-[135px] box-border h-[20px] w-[400px] p-4 border-0" 
+  
+      
+      <div id="google-login" className=""
     hidden={isOneTapHidden}>
     <GoogleOAuthProvider clientId={clientId}>
       <GoogleLogin onSuccess={onSuccess} 
       onError = {() => {console.log("Fail")}}
       useOneTap/>
       </GoogleOAuthProvider>
-
     </div>  
 </div>
 
