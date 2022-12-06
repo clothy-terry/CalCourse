@@ -1,27 +1,14 @@
-import { Button, Divider, Form, Input, Drawer} from "antd";
 import "./Login.css";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
-import { useGoogleLogin } from '@react-oauth/google';
 import { useState, useEffect, SetStateAction } from 'react';
 import Tutorial from "./Tutorial";
 import LoginAPI from "../../../requests/LoginAPI";
 import About from "./About";
 import Cookie from "./Cookie";
 import { useNavigate } from 'react-router-dom';
-import type { RadioChangeEvent } from 'antd';
 import jwt_decode from "jwt-decode";
-
-import {
-  GoogleButton,
-  IAuthorizationOptions,
-  isLoggedIn,
-  createOAuthHeaders,
-  logOutOAuthUser,
-  GoogleAuth,
-} from "react-google-oauth2";
 import { verifyEmailAddress } from "../../../requests/Login-API/verify-email-address";
-//import {GoogleLogin} from 'react-google-login'
 
 
 const Login = () => {
@@ -34,12 +21,6 @@ const Login = () => {
     navigate("/dashboard");
     console.log("checked");
   }
-
-  const onFinish = (values: any) => {
-    console.log('Success:', values, "hi there!");
-    let email = form.getFieldValue("emailInputField")
-    console.log(email);
-  };
 
   const[isEmailAuthHidden, setEmailAuthHidden] = useState(true);
   const[isOneTapHidden, setOnetapHidden] = useState(true);
@@ -92,7 +73,7 @@ const Login = () => {
   const [emailOriginalInput, setEmailOriginalInput] = useState("?");
   const [emailInput, setEmailInput] = useState("?");
 
-  const[form] = Form.useForm();
+  
 
   function storeEmailInput(event:any) {
     setEmailOriginalInput(event.target.value)

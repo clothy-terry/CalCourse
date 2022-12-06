@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import image123 from '../../../assets/123.jpg';
-
+import image1 from '../../../assets/Picture1.jpg';
+import image2 from '../../../assets/Picture2.jpg';
+import image3 from '../../../assets/Picture3.jpg';
+import image4 from '../../../assets/Picture5.jpg';
+import image5 from '../../../assets/Picture4.jpg';
 class Tutorial extends Component {
     state = {  } 
     render() { 
@@ -21,7 +24,7 @@ class Tutorial extends Component {
 </p>
 <p className="c2">
 <span style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}}>
-<img alt="" src={image123} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
+<img alt="" src={image1} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
 </span>
 </p>
 <p className="c2 c3">
@@ -34,7 +37,7 @@ class Tutorial extends Component {
 </p>
 <p className="c2">
 <span style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}}>
-<img alt="" src="assets/123.jpg" style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
+<img alt="" src={image2} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
 </span>
 </p>
 <p className="c2 c3">
@@ -51,7 +54,7 @@ class Tutorial extends Component {
 </p>
 <p className="c2">
 <span style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}}>
-<img alt="" src="assets/images/image5.png" style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
+<img alt="" src={image3} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
 </span>
 </p>
 <p className="c2 c3">
@@ -80,7 +83,7 @@ class Tutorial extends Component {
 </p>
 <p className="c2">
 <span style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}}>
-<img alt="" src="assets/images/image4.png" style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
+<img alt="" src={image4} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
 </span>
 </p>
 <p className="c2 c3">
@@ -101,7 +104,7 @@ class Tutorial extends Component {
 </p>
 <p className="c2">
 <span style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}}>
-<img alt="" src="assets/images/image1.png" style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
+<img alt="" src={image5} style={{margin: 0.00, border: 0.00, width: 624.00, height: 392.00}} title=""></img>
 </span>
 </p>
 </div>
