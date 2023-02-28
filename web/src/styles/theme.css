@@ -55,4 +55,8 @@
     .text-title {
         @apply text-graphite text-3xl font-bold font-body p-2;
     }
+
+    .text-subtitle {
+        @apply text-graphite text-lg font-bold font-body p-2;
+    }
 }
