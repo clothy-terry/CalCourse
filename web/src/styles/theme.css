@@ -30,7 +30,7 @@
 
     /* 半透明卡片 */
     .card-transluscent {
-        @apply min-h-[3vh] h-48 max-w-sm rounded-2xl bg-transluscent;
+        @apply min-h-[3vh] h-48 rounded-2xl bg-transluscent;
         border: 2px solid rgba(255, 255, 255, 0.3);
     }
 
