@@ -1,11 +1,9 @@
 import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import CourseAPI from '../../requests/CourseAPI'
-import type { CourseData } from '../../utils/interfaces'
+import type { CourseData, ISubmenuItem } from '../../utils/interfaces'
 import CourseCard from './CourseCard/CourseCard.component'
 
-import QRCard from './QRCard/QRCard'
-
-const Dashboard = () => {
+const Dashboard = (category: ISubmenuItem) => {
     const [courses, set_courses] = useState<Array<CourseData>>([])
     const [search_string, set_search_string] = useState('')
     const [courses_this_term, set_courses_this_term] = useState<
@@ -18,7 +16,6 @@ const Dashboard = () => {
     // * Processes search string
     // * abbr => full course name
     //   e.g. 'cs' => 'compsci'
-
     const parse_search_string = (search_string: string): string => {
         switch (search_string.toLowerCase()) {
             case 'cs':
@@ -47,14 +44,7 @@ const Dashboard = () => {
     }
 
     // * hardcoded right now
-    const [selected_term, set_selected_term] = useState('UCB Sp23')
-
-    const terms = [
-        { school_name_and_term: 'UCB Sp23', label: 'Spring 2023 课群' },
-        // { school_name_and_term: "UCB Fa22", label: "Fall 2022 课群" },
-        { school_name_and_term: 'UCB Mj01', label: '专业群' },
-        { school_name_and_term: 'UCB Lf01', label: 'Cal Life' },
-    ]
+    // const [selected_term, set_selected_term] = useState('UCB Sp23')
 
     // TODO: integrate this into the buttons on the side
     // const util_cards = [
@@ -88,10 +78,10 @@ const Dashboard = () => {
             courses.filter(course => {
                 return course['school_name_and_term']
                     .toLowerCase()
-                    .includes(selected_term.toLowerCase())
+                    .includes(category.value.toLowerCase())
             })
         )
-    }, [courses, selected_term])
+    }, [courses, category])
 
     // filter term when search_string is updated (i.e. user typing in input)
     useEffect(() => {
@@ -121,7 +111,7 @@ const Dashboard = () => {
                 }}
             />
             {/* Terms / Categories Bar */}
-            <div
+            {/* <div
                 id="filterBar"
                 className="grid relative w-fit text-center grid-cols-4 my-[20px] mx-auto"
             >
@@ -145,12 +135,12 @@ const Dashboard = () => {
                         </button>
                     )
                 })}
-            </div>
+            </div> */}
 
             {/* Actual Courses */}
             <div
                 id="main-container"
-                className="grid relative max-w-[800px] w-[90vw] my-[20px] mx-auto min-h-screen grid-cols-3 auto-rows-mi gap-[32px]"
+                className="grid relative max-w-[800px] w-[90vw] my-[20px] mx-auto min-h-screen grid-cols-3 auto-rows-mi gap-20"
             >
                 {displayed_courses.map(course => (
                     <CourseCard course={course} />
