@@ -9,7 +9,9 @@ const NavBar = () => {
             <h1 className="mx-auto w-full text-4xl mt-12 text-center font-logo font-black text-logo opacity-[.87]">
                 CalCourse
             </h1>
-            <ul className="right-0 mt-36 pr-4">
+            <ul
+                className={`right-0 mt-36 pr-4 grid auto-rows-max`}
+            >
                 {navbar_items.map(item => NavBarItem(item))}
             </ul>
             <Footer />
