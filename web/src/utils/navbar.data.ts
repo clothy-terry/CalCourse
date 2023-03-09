@@ -13,6 +13,23 @@ export const navbar_items: INavBarItem[] = [
         label: '群聊查找',
         icon: IoSearchCircle,
         path: 'dashboard',
+        submenu: [
+            {
+                label: 'Spring 2023 课群',
+                value: 'UCB Sp23',
+                path: '/dashboard',
+            },
+            {
+                label: '专业群',
+                value: 'UCB Mj01',
+                path: '/dashboard/majors',
+            },
+            {
+                label: 'Cal Life',
+                value: 'UCB Lf01',
+                path: '/dashboard/life',
+            },
+        ],
     },
     {
         label: '学术资源',

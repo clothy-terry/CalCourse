@@ -47,4 +47,11 @@ export interface INavBarItem {
     label: string
     icon: IconType
     path: string
+    submenu?: ISubmenuItem[]
+}
+
+export interface ISubmenuItem {
+    label: string
+    value: string
+    path: string
 }
