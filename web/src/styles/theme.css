@@ -30,8 +30,24 @@
 
     /* 半透明卡片 */
     .card-transluscent {
-        @apply min-h-[3vh] h-48 rounded-2xl bg-transluscent;
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        @apply min-h-[3vh] h-48 rounded-lg bg-transluscent;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .card-qr-code {
+        @apply card-transluscent;
+    }
+
+    .card-qr-code::before {
+        @apply border-b-8 border-accent;
+        content: ' ';
+        position: absolute;
+        z-index: -1;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        border: 0 0 0 8px solid #ffea00;
     }
 
     /* 半透明按钮 */
@@ -58,5 +74,10 @@
 
     .text-subtitle {
         @apply text-graphite text-lg font-bold font-body p-2;
+    }
+
+    .list-right {
+        @apply list-disc list-outside;
+        direction: rtl;
     }
 }
