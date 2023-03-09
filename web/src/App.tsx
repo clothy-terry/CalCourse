@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, Outlet } from 'react-router-dom'
 import Login from './components/User/Login/Login'
 import UserPortal from './components/User/UserPortal/UserPortal'
 import CodingLounge from './components/CodingLounge/CodingLounge'
@@ -14,8 +14,11 @@ import Playground from './components/Playground/Playground.page'
 
 import 'antd/dist/antd.css'
 import './styles/theme.css'
+import { navbar_items } from './utils/navbar.data'
 
 function App() {
+    const submenu = navbar_items[1].submenu != null ? navbar_items[1].submenu : []
+
     return (
         <BrowserRouter>
             {/* 更新了 navigation 的框架，所有的页面都是通过 Navigation 这个架构 render 的，具体的细节在文件里有细说 
@@ -24,7 +27,17 @@ function App() {
                 <Route path="/" element={<Navigation />}>
                     <Route index element={<Login />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Outlet />}>
+                        <Route index element={Dashboard(submenu[0])} />
+                        <Route
+                            path="/dashboard/majors"
+                            element={Dashboard(submenu[1])}
+                        />
+                        <Route
+                            path="/dashboard/life"
+                            element={Dashboard(submenu[2])}
+                        />
+                    </Route>
                     <Route
                         path="/dashboard/request"
                         element={<RequestPage />}
